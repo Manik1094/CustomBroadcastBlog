@@ -1,0 +1,228 @@
+<html lang=en>
+
+
+
+<p><strong>Table of Contents:</strong></p>
+
+<ol>  
+        
+<li><a href='#introduction'>Introduction</a></li>
+<li><a href='#custom-broadcast-receiver'> What is a Custom Broadcast Receiver?</a></li>
+<li><a href = '#normal-broadcasts'>Normal Broadcasts</a></li>
+<li><a href = '#ordered-broadcasts'>Ordered Broadcasts</li>
+<li><a href = '#local-broadcasts'>Local Broadcasts</li>
+
+
+<li>
+An Example:
+<br>
+<ol>
+
+<li><a href='#ExampleIntroduction'>Example Introduction</a></li>
+<li><a href='#CreatingThreeBroadcastReceiverclass'>Creating  three custom Broadcast Receivers class</a></li>
+<li><a href='#registeringBroadcastReceiver'>Registering a Broadcast Receiver</a></li>
+<li><a href='#designingLayout'>Designing Layout</a></li>
+<li><a href = '#implementBroadcastReceiver'>Implementing Broadcast Receiver in Activity</a></li>
+<li><a href='#sendingBroadcasts'>Sending Broadcasts</a></li>
+<li><a href='#receivingBroadcasts'>Receiving Broadcasts</a></li>
+<li><a href='#output'>Output</a></li>
+
+
+</ol>
+</ol>
+</li>
+</ul>
+<br>
+<br><br>
+
+
+
+
+
+<h3 id='introduction'>Introduction</h3>
+<br>
+In previous blog we talked about some default intent filters you can use with Broadcast Receivers such as Battery Low , Headphone plugged , Airplane Mode etc. Check out <a href = "https://codingwithmitch.com/blog/broadcast-receivers-getting-started/"
+target = "_blank">here</a>  , in this blog we gonna talk about our custom intent filters actions and Broadcast Receivers and how to use it in Android.<br><br><br>
+
+
+
+<h3 id='custom-broadcast-receiver'>What is a Custom Broadcast Receiver?</h3>
+<br>
+
+<b>Custom Broadcast Reciever : </b>In addition to responding to system events , your app can respond to Custom events also.For Custom Broadcast we need to define our
+own actions in Intent object and broadcast it to receiver. We can send Custom Broadcast in three ways : <br>
+<ul>
+<li>Normal Broadcasts</li>
+<li>Ordered Broadcasts</li>
+<li>Local Broadcasts</li>
+</ul> 
+
+<b>Note: </b> We will be covering all these types. So , Let's get started.. 
+
+<br><br><br>
+
+<h3 id='normal-broadcasts'>Normal Broadcasts</h3>
+<br>
+These type of broadcasts are asynchronous in nature . Receivers attached to these broadcasts run in an undefined order , approx at a same time.
+To send a Normal Broadcast create a new Intent object passing your own custom action into it and call <b>sendBroadcast(Intent)</b> method.
+<br><br><br>
+
+<h3 id='ordered-broadcasts'>Ordered Broadcasts</h3>
+<br>
+These type of broadcasts are delivered to one receiver at a time.The priority value in Intent filter decides which receiver to call first , When first receiver finished executing then it can propagate the result to second receiver and so on. 
+To send an ordered Broadcast create a new Intent object passing your own custom action into it and then call <b>sendOrderedBroadcast(Intent , String)</b> method.  
+
+
+<br><br><br>
+
+
+<h3 id='local-broadcasts'>Local Broadcasts</h3>
+<br>
+These type of broadcasts are used when sender and receiver are in the same app . To send Local Broadcast create a new Intent object passing your own custom action into it and call <b>LocalBroadcastManager.getInstance(context).sendBroadcast(intent)</b>.
+<br><br><br>
+
+
+
+<h3 id='ExampleIntroduction'>Example Introduction</h3>
+<br>
+We will build the simple app which contains three buttons. On Click of first Button we will send a Normal Custom Broadcast , On click of second button we will send a Ordered Custom Broadcast and on click of third button we will send a Local custom Broadcast.
+<br><br>
+Let's begin the coding.
+
+<br><br><br>
+
+
+<h3 id='CreatingThreeBroadcastReceiverclass'>Creating  three custom Broadcast Receivers class</h3>
+<br>
+Create three java classes "FirstCustomBroadcastReceiver.java and SecondCustomBroadcastReceiver.java for Normal and Ordered Broadcasts  and LocalBroadcast.java for Local Broadcast which extends from Broadcast Receiver class and override "onReceive()" method.".<br><br>
+<script src="https://gist.github.com/Manik1094/3bc1a4655d29a2ed261248559ff0f6b6.js"></script>
+<br>
+<script src="https://gist.github.com/Manik1094/453ab50bb75549c61abc166a304c7ccc.js"></script>
+<br>
+<script src="https://gist.github.com/Manik1094/b8d4637234e92b8fe73902441d47ef56.js"></script>
+
+
+<br><br><br>
+
+
+<h3 id='registeringBroadcastReceiver'>Registering a Broadcast Receiver</h3>
+<br>
+Open AndroidManifest.xml and register all the receivers class under application tag. For classes FirstCustomBroadcastReceiver.java and SecondCustomBroadcastReceiver.java declare the priority value in Intent filter , bigger the priority value first to receive a ordered Broadcast and add your custom action under intent filter tag.
+<ul>
+<li><b>Intent Filter</b><br>
+It specifies the type of intents that a broadcast receiver can respond to in your app . Basically it contains all the implicit intents and used for filtering the intents based on some actions and category.
+</li>
+<br>
+
+<li><b>Custom Action</b><br>
+A String which specifies a generic action to perform in app , The action generally determines the information contained in data or extras.In this we are specifying our own action which we will used by our Broadcast receivers.
+</li>
+</ul>
+
+<br><br>
+<script src="https://gist.github.com/Manik1094/aaf4551dcae8b9904409282d41ac403c.js"></script>
+
+<br><br><br>
+
+<h3 id='designingLayout'>Designing Layout</h3>
+<br>
+Open activity_main.xml file and add the following code.The layout contains three buttons on click of which we will send our Normal , Ordered and Local Broadcast.<br><br>
+<script src="https://gist.github.com/Manik1094/a8bbe3d86ab6e5e029a845f41e3a265f.js"></script>
+<br><br><br>
+
+
+<h3 id='implementBroadcastReceiver'>Implementing Broadcast Receiver in Activity</h3>
+<br>
+Open MainActivity.java file and add the following code , we are creating objects of our custom Receiver classes , button and defining our custom action . In addition to this we are registering the receiver in onStart() and unregistering the receiver in onDestroy() .<br><br>
+
+<b>Why registering the third receiver is different?</b><br><br>
+If you want to send the broadcasts locally within your app then you need to use Local Broadcasts and Android system provides LocalBroadcastManager class to register the Local Broadcast. This has a number of advantages :
+<ul></ul>
+<li>This makes impossible for other apps to send the broadcasts to your app.This helps in maintaining security.</li>
+<li>It is more efficient.</li>
+<li>Data you are broadcasting in your app won't leave outside of your app.So you don't need to worry about your private data.</li>
+<br><br>
+
+<b>Why we need to register a Broadcast Receiver in onStart()?</b><br><br>
+In order to send and receive Broadcast receivers in Android you need to first register them so that Android system can notify the receivers when specific event occur.<br><br>
+
+<b>Why we need to unregister a Broadcast Receiver in onDestroy()?</b><br><br>
+If we don't unregister a receiver in onDestroy() then it still holds the reference to activity , even if we close the activity this leads to Memory leaks(Memory which is allocated but never freed) in android and Garbage collector will not be able to free that unused memory.<br><br> 
+
+
+<script src="https://gist.github.com/Manik1094/9ff4e1c97afbb15e1a10d864e55aecc9.js"></script>
+<br>
+I would like to explain the above code . <br><br>
+In onStart() method if you notice that FirstCustomBroadcastReceiver and SecondCustomBroadcastReceiver are registered using registerReceiver() method because these are Normal and Ordered Broadcasts , on other hand LocalBroadcast.java is registered using LocalBroadcastManager.registerReceiver() because this is the way to register the Local Broadcasts.
+<br><br><br>
+
+<h3 id='sendingBroadcasts'>Sending Broadcasts</h3>
+<br>
+Open MainActivity.java file and add the following code , on click of three buttons we are sending normal , ordered and Local broadcast respectively. First we are passing our custom action in Intent object and then sending Local Broadcast using LocalBroadcastManager.sendBroadcast() similarly we are sending normal Broadcast using sendBroadcast() and ordered broadcast using sendOrderedBroadcast() . <br><br>
+<script src="https://gist.github.com/Manik1094/86e8816189de40a262f521bacbffa549.js"></script>
+<br><br><br>
+
+<h3 id='receivingBroadcasts'>Receiving Broadcasts</h3>
+<br>
+Open FirstCustomBroadcastReceiver.java , SecondCustomBroadcastReceiver.java and LocalBroadcast.java and add the following code inside onReceive() . Inside this if action is equal to our custom action then Log message will be displayed.<br><br>
+<script src="https://gist.github.com/Manik1094/478fa167477f825395509ca7a2ac6ab5.js"></script>
+<br>
+<script src="https://gist.github.com/Manik1094/fe1b5479f179e4702d9102184c1fb782.js"></script>
+<br>
+<script src="https://gist.github.com/Manik1094/8906481bcbfc5901482937faf005501c.js"></script>
+<br><br>
+
+<h3 id='output'>Output</h3>
+<br>
+<ul>
+<li><b>Normal Broadcast</b><br><br>
+<div class="row justify-content-md-center">
+<img class="img-fluid text-center"
+src = "C:\Users\Manik Gupta\Desktop\normal_output.png">
+</div>
+<br>
+<br>
+The above image shows the Log message when normal broadcast is received , if you notice the receivers gets called approximately at a same time.
+<br><br>
+</li>
+<li><b>Ordered Broadcast</b><br><br>
+<div class="row justify-content-md-center">
+<img class="img-fluid text-center"
+src = "C:\Users\Manik Gupta\Desktop\ordered_output.png">
+</div>
+<br><br>
+The above image shows the Log message when Ordered broadcast is received , if you notice FirstReceiver class is called first because it's priority is high and SecondReceiver class is called after FirstReceiver because it's priority is low.
+<br><br>
+</li>
+<li><b>Local Broadcast</b><br><br>
+<div class="row justify-content-md-center">
+<img class="img-fluid text-center"
+src = "C:\Users\Manik Gupta\Desktop\local_output.png">
+</div>
+<br><br>
+The above image shows the Log message when local broadcast is received .
+</li>
+</ul>
+
+
+
+
+
+
+<br><br><br>
+
+
+
+
+That's All! Happy Coding!
+<br><br><br>
+
+
+The complete code is available <a href="https://github.com/Manik1094/CustomBroadcastsExample" target="_blank" rel="nofollow">here</a>.
+<br><br><br>
+
+
+
+
+
+</html>
